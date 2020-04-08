@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>拖拽</title>
+    <style>
+      html,body{
+        margin: 0;
+        padding: 0;
+      }
+      #box{
+        display: flex;
+        width: 100%;
+        height: 400px;
+        margin-top: 10%;
+        background-color: pink;
+        justify-content: space-between;
+      }
+      .left{
+        display: flex;
+        width: 30%;
+        height: 100%;
+        background-color: skyblue;
+        flex-flow: wrap;
+        align-content: space-between;
+        list-style-type: none;
+        border: 1px solid transparent;
+      }
+      ul{
+        display: flex;
+        width: 30%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: lightskyblue;
+        flex-flow: wrap;
+        align-content: space-between;
+        list-style-type: none;
+        border: 1px solid transparent;
+      }
+      li{
+        width: 100%;
+        height: 18%;
+        background-color: blueviolet;
+        text-align: center;
+        line-height: 72px;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <div class="left"></div>
+      <ul class="right">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </div>
+  </body>
+  <script>
+    //获取所有的拖拽元素
+    const Lis = document.getElementsByTagName('li');
+
+    //设置拖拽属性
+    Array.prototype.map.call(Lis,item => item.draggable = 'true');
+
+    //定义拖拽元素的父级元素和接收拖拽元素的容器的变量
+    let rightBox = leftBox = null;
+    let a = null
+
+    //页面监听拖拽事件
+    document.addEventListener('dragstart',handle,false)
+
+    //拖拽事件发生时执行的函数
+    function handle(e){
+      //拖拽事件发生时调用
+      dragHandle(rightBox,leftBox,e)
+    }
+    
+    //事件处理函数
+    function dragHandle(rightBox,leftBox,e){
+      //拖拽开始
+      dragstart(e)
+      //拖拽中
+      rightBox.addEventListener('drag',drag,false)
+      //拖拽结束
+      rightBox.addEventListener('dragend',dragend,false)
+      
+      //拖拽元素进入容器
+      leftBox.ondragenter = function(e){
+        e.target.style.border = '1px solid red'
+      }
+      
+      //拖拽元素经过容器
+      leftBox.ondragover = function(e){
+        e.preventDefault();
+      }
+      
+      //拖拽元素离开容器
+      leftBox.ondragleave = function(e){
+        e.target.style.border = '1px solid transparent';
+      }
+
+      //拖拽元素进入容器并松开鼠标
+      leftBox.ondrop = function(e){
+        e.preventDefault();
+        // 获取被拖拽元素的属性
+        const b = e.dataTransfer.getData('id')
+        //获取被拖拽的元素
+        const element = document.getElementById(b)
+        
+        element.innerHTML = b
+        element.style.backgroundColor = 'blueviolet'
+        leftBox.appendChild(element)
+        leftBox.style.border = '1px solid transparent'
+      }
+
+      //拖拽开始调用
+      function dragstart(e) {
+        rightBox = e.path[1]
+        if(e.path[1].className === 'right'){
+          leftBox = e.path[1].parentNode.children[0]
+        }else{
+          leftBox = e.path[1].parentNode.children[1]
+        }
+        e.target.style.backgroundColor = 'skyblue'
+        a = e.target.innerHTML
+        e.target.innerHTML = '拖拽中。。。'
+        //给被拖拽的元素设置一个属性
+        e.dataTransfer.setData('id',a)
+        e.target.id = a
+      }
+     
+      //拖拽结束调用
+      function dragend(e){
+        e.target.style.backgroundColor = 'blueviolet'
+        e.target.innerHTML = a
+      }
+      
+      //拖拽中调用
+      function drag(e){
+        e.target.style.backgroundColor = 'red'
+      }
+    }
+  </script>
+</html>

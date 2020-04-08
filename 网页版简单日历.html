@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网页版简单日历</title>
+  <style>
+    html,body,ul{
+      margin: 0;
+      padding: 0;
+    }
+    body,.header{
+      display: flex;
+    }
+    body{
+      justify-content: center;
+    }
+    ul{
+      list-style-type: none;
+    }
+    #calendar{
+      width: 500px;
+      min-width: 500px;
+      margin-top: 5%;
+      padding: 25px 0 5px;
+      background-color: #ccc;
+      user-select: none;
+    }
+    .header{
+      padding: 0 25px;
+      justify-content: space-between;
+    }
+    #pre:hover,#next:hover{
+      color: red;
+      cursor: pointer;
+    }
+    .week>li,.body>li{
+      width: 65px;
+      line-height: 65px;
+      display: inline-block;
+      text-align: center;
+    }
+    .body>li{
+      margin: 1px;
+    }
+    .body>li:empty{
+      border: 1px solid transparent;
+    }
+    .body>li:not(:empty){
+      border: 1px solid skyblue;
+      cursor: pointer;
+    }
+    .body>li:hover,.body>li.current{
+      border: 1px solid red;
+    }
+    .body>li.current{
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="calendar">
+    <ul class="header">
+      <li id="pre">上一月</li>
+      <li id="current"></li>
+      <li id="next">下一月</li>
+    </ul>
+    <ul class="week">
+      <li>日</li>
+      <li>一</li>
+      <li>二</li>
+      <li>三</li>
+      <li>四</li>
+      <li>五</li>
+      <li>六</li>
+    </ul>
+    <ul class="body"></ul>
+  </div>
+  <script>
+    const current = document.getElementById('current')
+    const pre = document.getElementById('pre')
+    const next = document.getElementById('next')
+    const body = document.getElementsByClassName('body')[0]
+    const gt = new Date()
+    function setCalender(){
+      //年
+      const year = gt.getFullYear()
+      //月
+      const month = gt.getMonth() + 1
+      let html = ''
+      //日
+      const day = gt.getDate()
+      //当前月的一号是周几
+      const week = new Date(year,month - 1,1).getDay()
+      //当前月的所有天数
+      const days = new Date(year,month,0).getDate()
+      //设置显示的年月
+      current.innerHTML = `${year}年${month}月`
+
+      for(let i = 0; i < week; i++){
+        html += '<li></li>'
+      }
+      for(let i = 1; i < days + 1; i++){
+        if(i === day){
+          html += `<li class='current'>${i}</li>`
+        }else{
+          html += `<li>${i}</li>`
+        }
+      }
+      body.innerHTML = html
+    }
+    pre.onclick = function(){
+      gt.setMonth(gt.getMonth() - 1)
+      setCalender()
+    }
+    next.onclick = function(){
+      gt.setMonth(gt.getMonth() + 1)
+      setCalender()
+    }
+    setCalender()
+  </script>
+</body>
+</html>
