@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时钟</title>
+  <style>
+    html,body,div,ul{
+      margin: 0;
+      padding: 0;
+    }
+    ul{
+      list-style-type: none;
+    }
+    body{
+      overflow: hidden;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    .wrap{
+      position: relative;
+    }
+    #clock{
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+    }
+    #clock>li{
+      position: absolute;
+      transform-origin: center 200px;
+      -webkit-transform-origin: center 200px;
+      -moz-transform-origin: center 200px;
+      -o-transform-origin: center 200px;
+      -ms-transform-origin: center 200px;
+    }
+    #clock>li{
+      left: 50%;
+      width: 1px;
+      height: 8px;
+      background-color: #666;
+    }
+    #clock>li:nth-child(5n+1){
+      height: 13px;
+      background-color: #000;
+    }
+    .num_wrap{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    #num{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      font-size: 0;
+      transform: rotate(128deg);
+    }
+    #num>li{
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      height: 20px;
+      margin: auto;
+    }
+    #num>li span{
+      display: inline-block;
+      padding: 25px;
+      font-size: 14px;
+    }
+    .common{
+      position: absolute;
+      transform-origin: right;
+      -o-transform-origin: right;
+      -moz-transform-origin: right;
+      -webkit-transform-origin: right;
+      -ms-transform-origin: right;
+    }
+    .common::before{
+      content: '';
+      position: absolute;
+      background-color: #fff;
+    }
+    #hour{
+      top: 198px;
+      left: 72px;
+      width: 130px;
+      height: 8px;
+      background-color: #000;
+      border-radius: 8px;
+    }
+    #hour::before{
+      top: 0;
+      bottom: 0;
+      left: 2px;
+      width: 50px;
+      height: 3px;
+      margin: auto;
+      border-radius: 3px;
+    }
+    #min{
+      top: 199px;
+      left: 22px;
+      width: 180px;
+      height: 6px;
+      background-color: #000;
+      border-radius: 6px;
+    }
+    #min::before{
+      top: 0;
+      bottom: 0;
+      left: 2px;
+      width: 50px;
+      height: 3px;
+      margin: auto;
+      border-radius: 2px;
+    }
+    #sec{
+      top: 201px;
+      left: 0px;
+      width: 202px;
+      height: 2px;
+      background-color: red;
+    }
+    #sec::before{
+      top: -5px;
+      right: -5px;
+      width: 7px;
+      height: 7px;
+      border: 2px solid red;
+      border-radius: 50%;
+    }
+    #sec::after{
+      content: '';
+      position: absolute;
+      right: -13px;
+      width: 8px;
+      height: 2px;
+      background-color: red;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 放刻度的地方 -->
+    <ul id="clock"></ul>
+    <!-- 放数字的地方 -->
+    <div class="num_wrap">
+      <ul id="num"></ul>
+    </div>
+    <!-- 时分秒指针 -->
+    <div id="hour" class="common"></div>
+    <div id="min" class="common"></div>
+    <div id="sec" class="common"></div>
+  </div>
+  <script>
+    function initClock(){
+      //生成刻度
+      for(let i = 0; i < 60; i++){
+        let Li = document.createElement('li')
+        Li.style.transform = `rotate(${i*6}deg)`
+        clock.appendChild(Li)
+      }
+      //生成数字
+      for(let i = 0; i < 12; i++){
+        let Li = document.createElement('li')
+        let span = document.createElement('span')
+        span.innerText = i + 1
+        span.style.transform = `rotate(${-(i*30+127)}deg)`
+        Li.appendChild(span)
+        Li.style.transform = `rotate(${i*30}deg)`
+        num.appendChild(Li)
+      }
+      setTime()
+    }
+    function setTime(){
+      const time = new Date()
+      const seconds = time.getSeconds()
+      const minutes = time.getMinutes() + seconds/60
+      const hours = time.getHours() > 12 ? time.getHours() -12 : time.getHours()
+      
+      sec.style.transform = `rotate(${seconds*6 + 90}deg)`
+      min.style.transform = `rotate(${minutes*6 + 90}deg)`
+      hour.style.transform = `rotate(${hours*30 + 90}deg)`
+    }
+    //初始化时钟
+    initClock()
+    //定时器 1秒设置一次时间
+    setInterval(setTime, 1000);
+  </script>
+</body>
+</html>
